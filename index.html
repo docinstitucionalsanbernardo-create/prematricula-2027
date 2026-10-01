@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prematrícula 2027 · IE San Bernardo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Colores: cámbielos aquí si la institución usa otros */
+    --verde:#1f5c3f;
+    --verde-osc:#123826;
+    --verde-claro:#e6f0ea;
+    --dorado:#e0a526;
+    --fondo:#f3f6f3;
+    --tinta:#17261e;
+    --gris:#5b6b62;
+    --linea:#d3dcd5;
+    --error:#b3261e;
+    --blanco:#fff;
+    --titulos:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+    --texto:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--texto);font-size:17px;line-height:1.5}
+  header.cabecera{background:var(--verde-osc);color:#fff;padding:28px 20px 56px}
+  .cabecera .in{max-width:760px;margin:0 auto}
+  .cabecera .sede{margin:0 0 6px;font-size:15px;color:#cfe3d7}
+  .cabecera h1{margin:0 0 10px;font-family:var(--titulos);font-weight:700;font-size:clamp(28px,6vw,40px);line-height:1.1;letter-spacing:-.01em}
+  .cabecera p.intro{margin:0;max-width:60ch;color:#e3efe8}
+  .cabecera .franja{display:block;width:64px;height:5px;background:var(--dorado);border-radius:3px;margin-bottom:18px}
+  main{max-width:760px;margin:-32px auto 48px;padding:0 16px}
+  .tarjeta{background:var(--blanco);border:1px solid var(--linea);border-radius:14px;padding:24px 22px 26px;box-shadow:0 1px 0 rgba(18,56,38,.04)}
+  @media(min-width:640px){.tarjeta{padding:32px 36px 34px}}
+
+  /* progreso */
+  .progreso{margin-bottom:22px}
+  .progreso .barras{display:flex;gap:6px}
+  .progreso .barras span{flex:1;height:6px;border-radius:3px;background:var(--linea);transition:background .25s}
+  .progreso .barras span.hecho{background:var(--verde)}
+  .progreso .barras span.actual{background:var(--dorado)}
+  .progreso p{margin:8px 0 0;font-size:14px;color:var(--gris)}
+
+  .paso h2{margin:0 0 4px;font-family:var(--titulos);font-size:24px;line-height:1.2;outline:none}
+  .paso .guia{margin:0 0 20px;color:var(--gris);font-size:16px}
+  .nota-obl{font-size:14px;color:var(--gris);margin:0 0 16px}
+
+  .rejilla{display:grid;grid-template-columns:1fr;gap:16px 18px}
+  @media(min-width:640px){.rejilla{grid-template-columns:1fr 1fr}.rejilla .completo{grid-column:1/-1}}
+  .campo label,.campo .etiqueta{display:block;font-weight:600;font-size:15.5px;margin-bottom:5px}
+  .req{color:var(--error)}
+  input[type=text],input[type=email],input[type=date],input[type=tel],select,textarea{
+    width:100%;font:inherit;color:var(--tinta);background:#fff;border:1.5px solid #b9c5bd;border-radius:9px;padding:11px 12px;min-height:48px;appearance:none;-webkit-appearance:none}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%231f5c3f' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+  textarea{min-height:96px;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:3px solid rgba(31,92,63,.28);border-color:var(--verde)}
+  input[data-upper]{text-transform:uppercase}
+  select:disabled{background-color:#eef2ef;color:#8a978f}
+  .pista{margin:4px 0 0;font-size:14px;color:var(--gris)}
+  .err{display:none;margin:5px 0 0;font-size:14px;color:var(--error);font-weight:500}
+  .campo.invalido input,.campo.invalido select,.campo.invalido textarea{border-color:var(--error)}
+  .campo.invalido .err{display:block}
+  .estado{font-size:14px;color:var(--gris);margin:5px 0 0}
+
+  /* opciones grandes */
+  .opciones{display:grid;gap:12px}
+  @media(min-width:560px){.opciones.dos{grid-template-columns:1fr 1fr}}
+  .opcion{position:relative}
+  .opcion input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer;margin:0}
+  .opcion .caja{display:block;border:1.5px solid #b9c5bd;border-radius:11px;padding:16px 18px;background:#fff;transition:border-color .15s,background .15s}
+  .opcion .caja b{display:block;font-family:var(--titulos);font-size:19px}
+  .opcion .caja span{font-size:15px;color:var(--gris)}
+  .opcion input:checked + .caja{border-color:var(--verde);background:var(--verde-claro);box-shadow:inset 0 0 0 1px var(--verde)}
+  .opcion input:focus-visible + .caja{outline:3px solid rgba(31,92,63,.35);outline-offset:2px}
+  .opcion.corta .caja{padding:13px 18px}
+  .opcion.corta .caja b{font-size:17px}
+
+  .aviso{border-left:4px solid var(--dorado);background:#fff8e6;padding:12px 14px;border-radius:0 8px 8px 0;font-size:15.5px;margin:0 0 16px}
+  .consent{display:flex;gap:12px;align-items:flex-start;margin-top:22px;padding:14px;border:1.5px solid var(--linea);border-radius:10px;background:#fafcfb}
+  .consent input{width:22px;height:22px;margin-top:2px;accent-color:var(--verde);flex:none}
+  .consent label{font-weight:400;font-size:15px;margin:0}
+  .campo.invalido.consent-c .err{display:block}
+
+  .acciones{display:flex;gap:12px;justify-content:space-between;margin-top:28px}
+  button{font:inherit;font-weight:600;border-radius:10px;padding:13px 24px;min-height:50px;cursor:pointer;border:1.5px solid transparent}
+  .btn-sig{background:var(--verde);color:#fff;margin-left:auto}
+  .btn-sig:hover{background:var(--verde-osc)}
+  .btn-atras{background:#fff;color:var(--verde);border-color:var(--verde)}
+  .btn-atras:hover{background:var(--verde-claro)}
+  button:disabled{opacity:.6;cursor:wait}
+  button:focus-visible{outline:3px solid rgba(224,165,38,.7);outline-offset:2px}
+  .error-envio{display:none;margin-top:16px;padding:12px 14px;border-radius:8px;background:#fdecea;color:#7a1712;font-size:15.5px}
+  .error-envio.ver{display:block}
+
+  .exito{text-align:center;padding:12px 0 4px}
+  .exito .sello{width:64px;height:64px;border-radius:50%;background:var(--verde);color:#fff;display:grid;place-items:center;margin:0 auto 14px;font-size:32px}
+  .exito h2{font-family:var(--titulos);font-size:28px;margin:0 0 8px}
+  .exito p{margin:0 auto 12px;max-width:46ch}
+  .radicado{display:inline-block;font-family:var(--titulos);font-size:26px;letter-spacing:.04em;background:var(--verde-claro);border:1.5px dashed var(--verde);border-radius:10px;padding:10px 22px;margin:6px 0 18px}
+
+  .config-falta{background:#fdecea;color:#7a1712;padding:12px 16px;text-align:center;font-size:15px}
+  footer{max-width:760px;margin:0 auto 40px;padding:0 20px;font-size:13.5px;color:var(--gris)}
+  [hidden]{display:none!important}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="aviso-config" class="config-falta" hidden>Falta configurar la dirección de la hoja de cálculo (API_URL) en este archivo.</div>
+
+<header class="cabecera">
+  <div class="in">
+    <span class="franja"></span>
+    <p class="sede">Institución Educativa San Bernardo · Barcelona, Calarcá – Quindío</p>
+    <h1>Proceso de prematrícula 2027</h1>
+    <p class="intro">Apreciado padre de familia o acudiente: para nosotros es muy importante saber si su hijo o acudido continuará sus estudios con nosotros en el año 2027. Por favor diligencie este formulario.</p>
+  </div>
+</header>
+
+<main>
+  <div class="tarjeta" id="tarjeta">
+    <form id="form" novalidate autocomplete="off">
+      <div class="progreso" id="progreso" aria-live="polite">
+        <div class="barras" id="barras"></div>
+        <p id="progreso-txt"></p>
+      </div>
+
+      <!-- Honeypot anti-spam: debe quedar vacío -->
+      <div style="position:absolute;left:-9999px" aria-hidden="true">
+        <label>No llenar <input type="text" name="sitio_web" id="sitio_web" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <div id="pasos"></div>
+
+      <div class="error-envio" id="error-envio" role="alert"></div>
+
+      <div class="acciones" id="acciones">
+        <button type="button" class="btn-atras" id="btn-atras" hidden>Atrás</button>
+        <button type="submit" class="btn-sig" id="btn-sig">Siguiente</button>
+      </div>
+    </form>
+
+    <div class="exito" id="exito" hidden>
+      <div class="sello" aria-hidden="true">✓</div>
+      <h2>Prematrícula recibida</h2>
+      <p>La información fue enviada correctamente a la institución.</p>
+      <div class="radicado" id="radicado-num"></div>
+      <p>Conserve este número de radicado para cualquier consulta.</p>
+      <button type="button" class="btn-sig" id="btn-otro" style="margin:8px auto 0">Registrar otro estudiante</button>
+    </div>
+  </div>
+</main>
+
+<footer>Los datos se tratan conforme a la Ley 1581 de 2012 sobre protección de datos personales, con especial cuidado de la información de niños, niñas y adolescentes.</footer>
+
+<script>
+/* =====================================================
+   CONFIGURACIÓN  (lo único que debe editar)
+   ===================================================== */
+const CONFIG = {
+  // Pegue aquí la URL de la implementación de Apps Script (termina en /exec)
+  API_URL: "https://script.google.com/macros/s/AKfycbw9gvJjy1WhxllckWHXTPF5LwJasIudRgUCDoAWvt1Cb7JuKs9oC5iwb-1db_LtXcfY/exec",
+  ANIO: 2027
+};
+
+const SEDES = ["MARIA AUXILIADORA", "SEDE PRINCIPAL", "BARRAGAN", "CALLE LARGA"];
+
+const PRIMARIA = ["TRANSICIÓN","PRIMERO","SEGUNDO","TERCERO","CUARTO","QUINTO"];
+const GRADOS_NUEVOS = {
+  "MARIA AUXILIADORA": PRIMARIA,
+  "BARRAGAN": PRIMARIA,
+  "CALLE LARGA": PRIMARIA,
+  "SEDE PRINCIPAL": ["SEXTO","SÉPTIMO","OCTAVO","NOVENO","DÉCIMO","UNDÉCIMO",
+    "CLEI I","CLEI II","CLEI III","CLEI IV","CLEI V","CLEI VI",
+    "PENSAR 1","PENSAR 2","PENSAR 3"]
+};
+
+/* =====================================================
+   Utilidades para construir campos
+   ===================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+function campo(id, label, o = {}) {
+  const { type = "text", req = true, upper = true, pista = "", full = false, inputmode = "", max = "", ac = "off" } = o;
+  return `<div class="campo ${full ? "completo" : ""}" data-campo="${id}">
+    <label for="${id}">${label}${req ? ' <span class="req">*</span>' : ""}</label>
+    <input id="${id}" name="${id}" type="${type}" autocomplete="${ac}" ${req ? "data-req" : ""} ${upper ? "data-upper" : ""} ${inputmode ? `inputmode="${inputmode}"` : ""} ${max ? `max="${max}"` : ""}>
+    ${pista ? `<p class="pista">${pista}</p>` : ""}<p class="err"></p></div>`;
+}
+function selector(id, label, opciones = [], o = {}) {
+  const { req = true, full = false, vacio = "Seleccione…", disabled = false } = o;
+  return `<div class="campo ${full ? "completo" : ""}" data-campo="${id}">
+    <label for="${id}">${label}${req ? ' <span class="req">*</span>' : ""}</label>
+    <select id="${id}" name="${id}" ${req ? "data-req" : ""} ${disabled ? "disabled" : ""}>
+      <option value="">${vacio}</option>${opciones.map(x => `<option value="${x}">${x}</option>`).join("")}
+    </select><p class="estado" id="${id}-estado" hidden></p><p class="err"></p></div>`;
+}
+function radios(name, items, o = {}) {
+  const { dos = true, corta = false } = o;
+  return `<div class="campo completo" data-campo="${name}" data-radios="${name}">
+    <div class="opciones ${dos ? "dos" : ""}">${items.map((it, i) => `
+      <label class="opcion ${corta ? "corta" : ""}">
+        <input type="radio" name="${name}" value="${it.valor}" ${i === 0 ? "data-req" : ""}>
+        <span class="caja"><b>${it.titulo}</b>${it.texto ? `<span>${it.texto}</span>` : ""}</span>
+      </label>`).join("")}
+    </div><p class="err"></p></div>`;
+}
+const hoy = () => new Date().toISOString().slice(0, 10);
+
+/* =====================================================
+   Definición de pasos
+   ===================================================== */
+const PASOS = {
+  inicio: {
+    titulo: "Para empezar",
+    guia: "Indique un correo de contacto y si el estudiante ya pertenece a la institución.",
+    html: () => `<p class="nota-obl"><span class="req">*</span> Indica que la pregunta es obligatoria.</p>
+      <div class="rejilla">
+        ${campo("correo", "Correo electrónico", { type: "email", upper: false, full: true, ac: "email" })}
+        <div class="campo completo" data-campo="tipo">
+          <span class="etiqueta">Tipo de estudiante <span class="req">*</span></span>
+          ${radios("tipo", [
+            { valor: "NUEVO", titulo: "Estudiante nuevo", texto: "Aún no está matriculado en la institución." },
+            { valor: "ANTIGUO", titulo: "Estudiante antiguo", texto: "Estudió con nosotros en el año 2026." }
+          ]).replace('class="campo completo" data-campo="tipo"', 'class="campo completo"')}
+        </div>
+      </div>`
+  },
+  n_sede: {
+    titulo: "Estudiante nuevo: sede y grado",
+    guia: "Elija la sede y el grado al que desea ingresar en 2027.",
+    html: () => `<div class="rejilla">
+      ${selector("n_sede", "Sede", SEDES, { full: true })}
+      ${selector("n_grado", "Grado", [], { full: true, disabled: true, vacio: "Primero seleccione la sede" })}
+    </div>`,
+    alMostrar() {
+      $("#n_sede").onchange = () => {
+        const g = GRADOS_NUEVOS[$("#n_sede").value] || [];
+        const s = $("#n_grado");
+        s.innerHTML = `<option value="">${g.length ? "Seleccione…" : "Primero seleccione la sede"}</option>` + g.map(x => `<option>${x}</option>`).join("");
+        s.disabled = !g.length;
+      };
+    }
+  },
+  n_estudiante: {
+    titulo: "Datos del estudiante",
+    guia: "Escriba los datos tal como aparecen en el documento de identidad.",
+    html: () => `<div class="rejilla">
+      ${campo("n_nombres", "Nombres del estudiante")}
+      ${campo("n_apellidos", "Apellidos del estudiante")}
+      ${campo("n_documento", "Número de documento del estudiante", { inputmode: "numeric" })}
+      ${campo("n_fecha_nac", "Fecha de nacimiento del estudiante", { type: "date", upper: false, max: hoy() })}
+      ${campo("n_depto_nac", "Departamento de nacimiento")}
+      ${campo("n_mun_nac", "Municipio de nacimiento")}
+      ${campo("n_depto_exp", "Departamento de expedición del documento")}
+      ${campo("n_mun_exp", "Municipio de expedición del documento")}
+    </div>`
+  },
+  n_residencia: {
+    titulo: "Residencia y contacto",
+    guia: "Dónde vive actualmente el estudiante.",
+    html: () => `<div class="rejilla">
+      ${campo("n_direccion", "Dirección del estudiante", { full: true, ac: "street-address" })}
+      ${campo("n_barrio", "Barrio o vereda")}
+      ${campo("n_municipio", "Municipio")}
+      ${campo("n_telefono", "Teléfono de contacto", { type: "tel", upper: false, inputmode: "tel", ac: "tel" })}
+    </div>`
+  },
+  n_acudiente: {
+    titulo: "Datos del acudiente",
+    guia: "Persona responsable del estudiante ante la institución.",
+    html: () => `<div class="rejilla">
+      ${campo("n_ac_nombre", "Nombres y apellidos del padre de familia o acudiente", { full: true })}
+      ${campo("n_ac_doc", "Número de documento del padre de familia o acudiente", { inputmode: "numeric" })}
+      ${campo("n_ac_parentesco", "Parentesco")}
+      ${campo("n_ac_fecha_nac", "Fecha de nacimiento del acudiente", { type: "date", upper: false, max: hoy() })}
+      ${campo("n_ac_depto_exp", "Departamento de expedición del documento")}
+      ${campo("n_ac_mun_exp", "Municipio de expedición del documento")}
+    </div>${consentimiento()}`
+  },
+  a_estudiante: {
+    titulo: "Estudiante antiguo",
+    guia: "Busque al estudiante por sede y grupo.",
+    html: () => `<div class="rejilla">
+      ${selector("a_sede", "Sede", SEDES, { full: true })}
+      ${selector("a_grupo", "Grupo", [], { full: true, disabled: true, vacio: "Primero seleccione la sede" })}
+      ${selector("a_estudiante", "Estudiante", [], { full: true, disabled: true, vacio: "Primero seleccione el grupo" })}
+    </div>
+    <p class="pista" style="margin-top:12px">Si no encuentra al estudiante en la lista, comuníquese con la secretaría de la institución.</p>`,
+    alMostrar: iniciarAntiguo
+  },
+  a_acudiente: {
+    titulo: "Datos del acudiente",
+    guia: "Persona que responde por el estudiante.",
+    html: () => `<div class="rejilla">
+      ${campo("a_ac_nombre", "Nombres y apellidos del padre de familia o acudiente", { full: true })}
+      ${campo("a_ac_doc", "Número de documento de identidad del padre de familia o acudiente", { full: true, inputmode: "numeric" })}
+    </div>`
+  },
+  a_continuidad: {
+    titulo: "Continuidad en la institución",
+    guia: `¿Continúa su hijo en la institución en el año ${CONFIG.ANIO}?`,
+    html: () => `${radios("a_continua", [
+        { valor: "SI", titulo: "Sí continúa", texto: "Quedará en proceso de matrícula." },
+        { valor: "NO", titulo: "No continúa", texto: "Cuéntenos el motivo." }
+      ], { corta: true })}
+      <div id="bloque-no" hidden>
+        <div class="aviso">Lamentamos que no continúe con nosotros. Por favor complete estos datos.</div>
+        <div class="rejilla">
+          <div class="campo completo" data-campo="a_motivo">
+            <label for="a_motivo">Describa el motivo por el que no continúa <span class="req">*</span></label>
+            <textarea id="a_motivo" name="a_motivo" data-upper data-req-no style="text-transform:uppercase"></textarea><p class="err"></p>
+          </div>
+          ${campo("a_inst", "Nombre de la institución donde se matriculará", { req: false, full: true }).replace("<input", "<input data-req-no")}
+          ${campo("a_inst_lugar", "Departamento y municipio de la institución", { req: false, full: true }).replace("<input", "<input data-req-no")}
+        </div>
+      </div>${consentimiento()}`,
+    alMostrar() {
+      const act = () => {
+        const no = (document.querySelector('input[name="a_continua"]:checked') || {}).value === "NO";
+        $("#bloque-no").hidden = !no;
+      };
+      $$('input[name="a_continua"]').forEach(r => r.onchange = act);
+      act();
+    }
+  }
+};
+
+function consentimiento() {
+  return `<div class="campo consent-c" data-campo="consent">
+    <div class="consent">
+      <input type="checkbox" id="consent" name="consent" data-req>
+      <label for="consent">Autorizo a la Institución Educativa San Bernardo a tratar los datos suministrados para el proceso de matrícula, conforme a la Ley 1581 de 2012. Confirmo que la información es veraz.</label>
+    </div><p class="err"></p></div>`;
+}
+
+const RUTAS = {
+  NUEVO: ["inicio", "n_sede", "n_estudiante", "n_residencia", "n_acudiente"],
+  ANTIGUO: ["inicio", "a_estudiante", "a_acudiente", "a_continuidad"]
+};
+
+/* =====================================================
+   Estado y navegación
+   ===================================================== */
+let ruta = ["inicio"];
+let idx = 0;
+let enviando = false;
+const cacheGrupos = {};
+
+const pasosEl = $("#pasos");
+Object.entries(PASOS).forEach(([k, p]) => {
+  const s = document.createElement("section");
+  s.className = "paso"; s.id = "paso-" + k; s.hidden = true;
+  s.innerHTML = `<h2 tabindex="-1">${p.titulo}</h2><p class="guia">${p.guia}</p>${p.html()}`;
+  pasosEl.appendChild(s);
+  if (p.alMostrar) p.alMostrar();
+});
+
+function tipoActual() {
+  const r = document.querySelector('input[name="tipo"]:checked');
+  return r ? r.value : "";
+}
+
+function mostrar(i, enfocar = true) {
+  idx = i;
+  $$(".paso").forEach(p => p.hidden = true);
+  const id = ruta[idx];
+  $("#paso-" + id).hidden = false;
+  const ultimo = idx === ruta.length - 1 && ruta.length > 1;
+  $("#btn-sig").textContent = ultimo ? "Enviar prematrícula" : "Siguiente";
+  $("#btn-atras").hidden = idx === 0;
+  $("#error-envio").classList.remove("ver");
+
+  const barras = $("#barras");
+  barras.innerHTML = ruta.map((_, n) => `<span class="${n < idx ? "hecho" : n === idx ? "actual" : ""}"></span>`).join("");
+  $("#progreso-txt").textContent = ruta.length > 1 ? `Paso ${idx + 1} de ${ruta.length}` : "Paso 1";
+  if (enfocar) {
+    window.scrollTo({ top: $("#tarjeta").offsetTop - 12, behavior: "smooth" });
+    const h = $("#paso-" + id + " h2"); if (h) h.focus({ preventScroll: true });
+  }
+}
+
+/* =====================================================
+   Validación
+   ===================================================== */
+function ponerError(el, msg) {
+  const c = el.closest(".campo"); if (!c) return;
+  c.classList.add("invalido");
+  const e = c.querySelector(".err"); if (e) e.textContent = msg;
+}
+function limpiarErrores(root) {
+  $$(".campo.invalido", root).forEach(c => c.classList.remove("invalido"));
+}
+function validarPaso() {
+  const root = $("#paso-" + ruta[idx]);
+  limpiarErrores(root);
+  let primero = null, ok = true;
+  const fallo = (el, msg) => { ponerError(el, msg); ok = false; if (!primero) primero = el; };
+
+  $$("input,select,textarea", root).forEach(el => {
+    if (el.closest("[hidden]") && el.closest("#bloque-no") ) return;
+    const v = (el.value || "").trim();
+    const noVisible = el.closest("#bloque-no") && $("#bloque-no").hidden;
+    if (noVisible) return;
+    const obligatorio = el.hasAttribute("data-req") || (el.hasAttribute("data-req-no") && !$("#bloque-no").hidden);
+
+    if (el.type === "radio") {
+      if (el.hasAttribute("data-req") && !$(`input[name="${el.name}"]:checked`)) fallo(el, "Elija una opción.");
+      return;
+    }
+    if (el.type === "checkbox") {
+      if (obligatorio && !el.checked) fallo(el, "Debe aceptar para poder enviar.");
+      return;
+    }
+    if (obligatorio && !v) { fallo(el, el.tagName === "SELECT" ? "Seleccione una opción." : "Este campo es obligatorio."); return; }
+    if (!v) return;
+    if (el.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) fallo(el, "Escriba un correo válido, por ejemplo nombre@correo.com.");
+    else if (el.type === "tel" && v.replace(/\D/g, "").length < 7) fallo(el, "Escriba un teléfono con al menos 7 dígitos.");
+    else if (el.type === "date" && v > hoy()) fallo(el, "La fecha no puede ser futura.");
+    else if (el.inputMode === "numeric" && !/^[0-9A-Za-z.\-]{4,20}$/.test(v)) fallo(el, "Revise el número de documento.");
+  });
+
+  if (primero) primero.focus({ preventScroll: false });
+  return ok;
+}
+
+/* =====================================================
+   Estudiantes antiguos: sedes → grupos → estudiantes
+   ===================================================== */
+function apiGet(params) {
+  if (CONFIG.API_URL.startsWith("PEGUE")) return Promise.reject(new Error("API_URL sin configurar"));
+  return fetch(CONFIG.API_URL + "?" + new URLSearchParams(params)).then(r => r.json()).then(d => {
+    if (!d.ok) throw new Error(d.error || "Error"); return d;
+  });
+}
+function estado(id, msg) {
+  const e = $("#" + id + "-estado"); if (!e) return;
+  e.hidden = !msg; e.textContent = msg || "";
+}
+function reiniciarSelect(id, vacio, deshabilitar = true) {
+  const s = $("#" + id);
+  s.innerHTML = `<option value="">${vacio}</option>`; s.disabled = deshabilitar;
+}
+function iniciarAntiguo() {
+  $("#a_sede").onchange = async () => {
+    const sede = $("#a_sede").value;
+    reiniciarSelect("a_grupo", "Primero seleccione la sede");
+    reiniciarSelect("a_estudiante", "Primero seleccione el grupo");
+    estado("a_grupo", ""); estado("a_estudiante", "");
+    if (!sede) return;
+    estado("a_grupo", "Cargando grupos…");
+    try {
+      if (!cacheGrupos[sede]) cacheGrupos[sede] = (await apiGet({ action: "grupos", sede })).grupos;
+      const g = cacheGrupos[sede];
+      reiniciarSelect("a_grupo", g.length ? "Seleccione…" : "No hay grupos disponibles", !g.length);
+      $("#a_grupo").insertAdjacentHTML("beforeend", g.map(x => `<option>${x}</option>`).join(""));
+      estado("a_grupo", "");
+    } catch (e) {
+      estado("a_grupo", "No se pudo cargar la lista. Revise su conexión e intente de nuevo cambiando la sede.");
+    }
+  };
+  $("#a_grupo").onchange = async () => {
+    const sede = $("#a_sede").value, grupo = $("#a_grupo").value;
+    reiniciarSelect("a_estudiante", "Primero seleccione el grupo");
+    estado("a_estudiante", "");
+    if (!grupo) return;
+    estado("a_estudiante", "Cargando estudiantes…");
+    try {
+      const lista = (await apiGet({ action: "estudiantes", sede, grupo })).estudiantes;
+      reiniciarSelect("a_estudiante", lista.length ? "Seleccione al estudiante…" : "No hay estudiantes en este grupo", !lista.length);
+      $("#a_estudiante").insertAdjacentHTML("beforeend",
+        lista.map(x => `<option value="${x.id}">${x.etiqueta.replace(/</g, "&lt;")}</option>`).join(""));
+      estado("a_estudiante", "");
+    } catch (e) {
+      estado("a_estudiante", "No se pudo cargar la lista. Seleccione el grupo de nuevo.");
+    }
+  };
+}
+
+/* =====================================================
+   Envío
+   ===================================================== */
+function recolectar() {
+  const d = { tipo: tipoActual(), correo: $("#correo").value.trim().toLowerCase(), sitio_web: $("#sitio_web").value };
+  const limpia = v => v.replace(/\s+/g, " ").trim().toUpperCase();
+  const tomar = ids => ids.forEach(id => { d[id] = limpia($("#" + id).value); });
+  if (d.tipo === "NUEVO") {
+    tomar(["n_sede","n_grado","n_nombres","n_apellidos","n_documento","n_depto_nac","n_mun_nac","n_depto_exp","n_mun_exp",
+           "n_direccion","n_barrio","n_municipio","n_telefono","n_ac_nombre","n_ac_doc","n_ac_parentesco","n_ac_depto_exp","n_ac_mun_exp"]);
+    d.n_fecha_nac = $("#n_fecha_nac").value;
+    d.n_ac_fecha_nac = $("#n_ac_fecha_nac").value;
+  } else {
+    tomar(["a_sede","a_grupo","a_ac_nombre","a_ac_doc"]);
+    d.a_estudiante_id = $("#a_estudiante").value;
+    d.a_continua = (document.querySelector('input[name="a_continua"]:checked') || {}).value || "";
+    if (d.a_continua === "NO") tomar(["a_motivo","a_inst","a_inst_lugar"]);
+  }
+  return d;
+}
+
+async function enviar() {
+  if (CONFIG.API_URL.startsWith("PEGUE")) {
+    return errorEnvio("El formulario aún no está conectado a la hoja de cálculo.");
+  }
+  enviando = true;
+  const btn = $("#btn-sig"); btn.disabled = true; btn.textContent = "Enviando…";
+  try {
+    const r = await fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify(recolectar()) });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || "No se pudo guardar.");
+    $("#form").hidden = true;
+    $("#exito").hidden = false;
+    $("#radicado-num").textContent = d.radicado;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (e) {
+    errorEnvio("No se pudo enviar: " + (e.message || "revise su conexión") + ". Sus datos siguen aquí; intente de nuevo.");
+  } finally {
+    enviando = false; btn.disabled = false;
+    btn.textContent = "Enviar prematrícula";
+  }
+}
+function errorEnvio(msg) {
+  const e = $("#error-envio"); e.textContent = msg; e.classList.add("ver");
+}
+
+/* =====================================================
+   Eventos
+   ===================================================== */
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (t.matches("[data-upper]")) {
+    const s = t.selectionStart, f = t.selectionEnd, v = t.value.toUpperCase();
+    if (v !== t.value) { t.value = v; try { t.setSelectionRange(s, f); } catch (_) {} }
+  }
+  const c = t.closest(".campo"); if (c) c.classList.remove("invalido");
+});
+
+$("#form").addEventListener("submit", e => {
+  e.preventDefault();
+  if (enviando || !validarPaso()) return;
+  if (idx === 0) { ruta = RUTAS[tipoActual()]; }
+  if (idx < ruta.length - 1) mostrar(idx + 1);
+  else enviar();
+});
+$("#btn-atras").addEventListener("click", () => { if (idx > 0) mostrar(idx - 1); });
+$("#btn-otro").addEventListener("click", () => {
+  $("#form").reset(); limpiarErrores(document);
+  reiniciarSelect("n_grado", "Primero seleccione la sede");
+  reiniciarSelect("a_grupo", "Primero seleccione la sede");
+  reiniciarSelect("a_estudiante", "Primero seleccione el grupo");
+  $("#bloque-no").hidden = true;
+  ruta = ["inicio"]; $("#exito").hidden = true; $("#form").hidden = false; mostrar(0);
+});
+
+if (CONFIG.API_URL.startsWith("PEGUE")) $("#aviso-config").hidden = false;
+mostrar(0, false);
+</script>
+</body>
+</html>
